@@ -7,9 +7,9 @@ app = Flask(__name__)
 CORS(app) 
 
 config = {
-    'host': '127.0.0.1',
-    'user': 'root',
-    'password': '5V@xqzA1/4qU',
+    'host': 'localhost',
+    'user': 'pledgx_user',
+    'password': '',
     'database': 'pledgx',
     'port': 3306
 }
