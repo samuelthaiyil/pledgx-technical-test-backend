@@ -8,11 +8,19 @@ CREATE DATABASE IF NOT EXISTS pledgx;
 
 USE pledgx;
 
+
 CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `phoneNumber` varchar(20) NOT NULL,
   `jobTitle` varchar(50) NOT NULL,
   `country` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `users` (`id`, `firstName`, `lastName`, `phoneNumber`, `jobTitle`, `country`) VALUES
+(0, '', '', '', '', '');
+
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
 COMMIT;
