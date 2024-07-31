@@ -42,8 +42,39 @@ def submit_form():
     
     return jsonify("Success"), 200
 
+def fetch_all():
+    connection = create_connection()
+    try:
+        if connection.is_connected():
+                print("Connected to MySQL database")
+                
+                # Create a cursor object using the cursor() method
+                cursor = connection.cursor(dictionary=True)
+                
+                # Prepare SQL query to fetch all rows from the users table
+                sql_query = "SELECT * FROM users"
+                
+                # Execute the SQL query
+                cursor.execute(sql_query)
+                
+                # Fetch all rows using fetchall() method
+                rows = cursor.fetchall()
+                
+                # Print each row
+                for row in rows:
+                    print(row)
+                
+    except Error as e:
+        print(f"Error: {e}")
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+            print("MySQL connection is closed")
+
+
 
 if __name__ == '__main__':
-    connection = create_connection()
+    fetch_all()
     app.run(port=3000, debug=True)
     

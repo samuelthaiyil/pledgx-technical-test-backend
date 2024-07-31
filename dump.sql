@@ -16,5 +16,3 @@ CREATE TABLE `users` (
   `country` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 COMMIT;
-
-INSERT INTO `users` (`firstName`, `lastName`, `phoneNumber`, `jobTitle`, `country`) VALUES ('', '', '', '', '');
