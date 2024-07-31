@@ -8,13 +8,12 @@ CREATE DATABASE IF NOT EXISTS pledgx;
 
 USE pledgx;
 
-
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `firstName` varchar(50) NOT NULL,
-  `lastName` varchar(50) NOT NULL,
-  `phoneNumber` varchar(20) NOT NULL,
-  `jobTitle` varchar(50) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `phone_number` varchar(20) NOT NULL,
+  `job_title` varchar(50) NOT NULL,
   `country` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
