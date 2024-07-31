@@ -25,56 +25,81 @@ def create_connection():
         return None
 
 @app.route('/submit-user', methods=['POST'])
-def submit_form():
+def submit_user():
     data = request.json
-   
-    # validation
-    if not data["firstName"]:
-        return jsonify({"Error": "firstName must have a value."}), 400
-    if not data["lastName"]:
-        return jsonify({"Error": "lastName must have a value."}), 400
-    if not data["phoneNumber"]:
-        return jsonify({"Error": "phoneNumber must have a value."}), 400
-    if not data["jobTitle"]:
-        return jsonify({"Error": "jobTitle must have a value."}), 400    
-    if not data["country"]:
-        return jsonify({"Error": "country must have a value."}), 400
-    
-    return jsonify("Success"), 200
 
-def fetch_all():
-    connection = create_connection()
+    # Validation
+    if not data.get("firstName"):
+        return jsonify({"Error": "firstName must have a value."}), 400
+    if not data.get("lastName"):
+        return jsonify({"Error": "lastName must have a value."}), 400
+    if not data.get("phoneNumber"):
+        return jsonify({"Error": "phoneNumber must have a value."}), 400
+    if not data.get("jobTitle"):
+        return jsonify({"Error": "jobTitle must have a value."}), 400
+    if not data.get("country"):
+        return jsonify({"Error": "country must have a value."}), 400
+
     try:
+        connection = create_connection()
         if connection.is_connected():
-                print("Connected to MySQL database")
+            cursor = connection.cursor(dictionary=True)
+            
+            cursor.execute("SELECT * FROM users ORDER BY id LIMIT 1")
+            first_row = cursor.fetchone()
+            
+            if first_row:
+                update_query = """
+                UPDATE users SET first_name = %s, last_name = %s, phone_number = %s, job_title = %s, country = %s WHERE id = %s
+                """
+                cursor.execute(update_query, (
+                    data["firstName"],
+                    data["lastName"],
+                    data["phoneNumber"],
+                    data["jobTitle"],
+                    data["country"],
+                    first_row['id']
+                ))
+                connection.commit()
                 
-                # Create a cursor object using the cursor() method
-                cursor = connection.cursor(dictionary=True)
-                
-                # Prepare SQL query to fetch all rows from the users table
-                sql_query = "SELECT * FROM users"
-                
-                # Execute the SQL query
-                cursor.execute(sql_query)
-                
-                # Fetch all rows using fetchall() method
-                rows = cursor.fetchall()
-                
-                # Print each row
-                for row in rows:
-                    print(row)
+                return jsonify("Success"), 200
+            else:
+                return jsonify({"Error": "Table has no rows to update."}), 404
                 
     except Error as e:
         print(f"Error: {e}")
+        return jsonify({"Error": str(e)}), 500
     finally:
         if connection.is_connected():
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
 
+@app.route('/get-user', methods=['GET'])
+def get_user():
+    connection = create_connection()
+    try:
+        if connection.is_connected():
+                print("successfully connected to db")
+        
+                cursor = connection.cursor(dictionary=True)
+                sql_query = "SELECT * FROM users"
+                cursor.execute(sql_query)
+                
+                user = cursor.fetchone()
 
+                if user:
+                    return user, 200
+                else:
+                    return jsonify({"error": "user not found"}), 404
+    
+    except Error as e:
+        print(f"error connecting to db: {e}")
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+        
 
 if __name__ == '__main__':
-    fetch_all()
     app.run(port=3000, debug=True)
     
